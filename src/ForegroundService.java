@@ -10,7 +10,7 @@ import android.app.NotificationManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.os.IBinder;
 import android.os.Bundle;
-// import android.annotation.TargetApi;
+import android.annotation.TargetApi;
 
 public class ForegroundService extends Service {
     @Override
@@ -30,60 +30,9 @@ public class ForegroundService extends Service {
 //     @TargetApi(26)
     private void startPluginForegroundService(Bundle extras) {
         Context context = getApplicationContext();
-
-        // Delete notification channel if it already exists
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.deleteNotificationChannel("foreground.service.channel");
-
-        // Get notification channel importance
-        Integer importance;
-
-        try {
-            importance = Integer.parseInt((String) extras.get("importance"));
-        } catch (NumberFormatException e) {
-            importance = 1;
-        }
-
-        switch(importance) {
-            case 2:
-                importance = NotificationManagerCompat.IMPORTANCE_DEFAULT;
-                break;
-            case 3:
-                importance = NotificationManagerCompat.IMPORTANCE_HIGH;
-                break;
-            default:
-                importance = NotificationManagerCompat.IMPORTANCE_LOW;
-            // We are not using IMPORTANCE_MIN because we want the notification to be visible
-        }
-
+        ///////////////////////////////////////////////
         // Get notification icon
         int icon = getResources().getIdentifier((String) extras.get("icon"), "drawable", context.getPackageName());
-        
-        
-        NotificationChannel channel;
-        Notification notification;
-        if (android.os.Build.VERSION.SDK_INT >= 26) {
-            // Create notification channel
-            channel = new NotificationChannel("foreground.service.channel", "Background Services", importance);
-            channel.setDescription("Enables background processing.");
-            getSystemService(NotificationManager.class).createNotificationChannel(channel);
-
-            // Make notification
-            notification = new NotificationCompat.Builder(context, "foreground.service.channel")
-                .setContentTitle((CharSequence) extras.get("title"))
-                .setContentText((CharSequence) extras.get("text"))
-                .setOngoing(true)
-                .setSmallIcon(icon == 0 ? 17301514 : icon) // Default is the star icon
-                .build();
-        } else {
-            // Make notification
-            notification = new NotificationCompat.Builder(context)
-                .setContentTitle((CharSequence) extras.get("title"))
-                .setContentText((CharSequence) extras.get("text"))
-                .setOngoing(true)
-                .setSmallIcon(icon == 0 ? 17301514 : icon) // Default is the star icon
-                .build();
-        }
 
         // Get notification ID
         Integer id;
@@ -93,8 +42,53 @@ public class ForegroundService extends Service {
             id = 0;
         }
 
-        // Put service in foreground and show notification (id of 0 is not allowed)
-        startForeground(id != 0 ? id : 197812504, notification);
+        final NotificationCompat.Builder builder = getNotificationBuilder(context,
+             "com.example.your_app.notification.CHANNEL_ID_FOREGROUND", // Channel id
+        NotificationManagerCompat.IMPORTANCE_LOW); //Low importance prevent visual appearance for this notification channel on top
+        builder.setOngoing(true)
+        .setSmallIcon(icon == 0 ? 17301514 : icon)
+        .setContentTitle((CharSequence) extras.get("title"))
+        .setContentText((CharSequence) extras.get("text"));
+
+        Notification notification = builder.build();
+
+        startForeground(notificationId, notification);
+
+        // if (notificationId != lastShownNotificationId) {
+        //       // Cancel previous notification
+        //       final NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        //       nm.cancel(lastShownNotificationId);
+        // }
+        // lastShownNotificationId = notificationId;
+        ///////////////////////////////////////////////
+    }
+
+    public static NotificationCompat.Builder getNotificationBuilder(Context context, String channelId, int importance) {
+        NotificationCompat.Builder builder;
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            prepareChannel(context, channelId, importance);
+            builder = new NotificationCompat.Builder(context, channelId);
+        } else {
+            builder = new NotificationCompat.Builder(context);
+        }
+        return builder;
+    }
+
+    @TargetApi(26)
+    private static void prepareChannel(Context context, String id, int importance) {
+        final String appName = "Background Services";
+        String description = "Enables background processing.";
+        final NotificationManager nm = (NotificationManager) context.getSystemService(Activity.NOTIFICATION_SERVICE);
+
+        if(nm != null) {
+            NotificationChannel nChannel = nm.getNotificationChannel(id);
+
+            if (nChannel == null) {
+                nChannel = new NotificationChannel(id, appName, importance);
+                nChannel.setDescription(description);
+                nm.createNotificationChannel(nChannel);
+            }
+        }
     }
 
     @Override
