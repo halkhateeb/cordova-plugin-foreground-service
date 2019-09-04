@@ -28,7 +28,11 @@ public class ForegroundPlugin extends CordovaPlugin {
                     .putExtra("id", args.getString(4));
                 
                 // Start the service
-                activity.getApplicationContext().startForegroundService(intent);
+                if (android.os.Build.VERSION.SDK_INT >= 26) {
+                    activity.getApplicationContext().startForegroundService(intent);
+                } else {
+                    activity.getApplicationContext().startService(intent);
+                }
             } else if (action.equals("stop")) {
                 // Tell the service we want to stop it
                 intent.setAction("stop");
