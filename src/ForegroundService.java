@@ -78,7 +78,7 @@ public class ForegroundService extends Service {
     private static void prepareChannel(Context context, String id, int importance) {
         final String appName = "Background Services";
         String description = "Enables background processing.";
-        final NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        final NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if(nm != null) {
             NotificationChannel nChannel = nm.getNotificationChannel(id);
