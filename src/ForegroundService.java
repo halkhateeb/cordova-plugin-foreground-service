@@ -39,7 +39,7 @@ public class ForegroundService extends Service {
         try {
             id = Integer.parseInt((String) extras.get("id"));
         } catch (NumberFormatException e) {
-            id = 0;
+            id = 1;
         }
 
         final NotificationCompat.Builder builder = getNotificationBuilder(context,
