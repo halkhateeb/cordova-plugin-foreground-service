@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.content.Context;
 import android.app.Service;
 import android.app.Notification;
+import android.support.v4.app.NotificationCompat;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.support.v4.app.NotificationManagerCompat;
 import android.os.IBinder;
 import android.os.Bundle;
 // import android.annotation.TargetApi;
@@ -44,13 +46,13 @@ public class ForegroundService extends Service {
 
         switch(importance) {
             case 2:
-                importance = NotificationManager.IMPORTANCE_DEFAULT;
+                importance = NotificationManagerCompat.IMPORTANCE_DEFAULT;
                 break;
             case 3:
-                importance = NotificationManager.IMPORTANCE_HIGH;
+                importance = NotificationManagerCompat.IMPORTANCE_HIGH;
                 break;
             default:
-                importance = NotificationManager.IMPORTANCE_LOW;
+                importance = NotificationManagerCompat.IMPORTANCE_LOW;
             // We are not using IMPORTANCE_MIN because we want the notification to be visible
         }
 
@@ -59,7 +61,7 @@ public class ForegroundService extends Service {
         
         
         NotificationChannel channel;
-        Notification notification;
+        NotificationCompat notification;
         if (android.os.Build.VERSION.SDK_INT >= 26) {
             // Create notification channel
             channel = new NotificationChannel("foreground.service.channel", "Background Services", importance);
@@ -67,7 +69,7 @@ public class ForegroundService extends Service {
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
 
             // Make notification
-            notification = new Notification.Builder(context, "foreground.service.channel")
+            notification = new NotificationCompat.Builder(context, "foreground.service.channel")
                 .setContentTitle((CharSequence) extras.get("title"))
                 .setContentText((CharSequence) extras.get("text"))
                 .setOngoing(true)
@@ -75,7 +77,7 @@ public class ForegroundService extends Service {
                 .build();
         } else {
             // Make notification
-            notification = new Notification.Builder(context)
+            notification = new NotificationCompat.Builder(context)
                 .setContentTitle((CharSequence) extras.get("title"))
                 .setContentText((CharSequence) extras.get("text"))
                 .setOngoing(true)
