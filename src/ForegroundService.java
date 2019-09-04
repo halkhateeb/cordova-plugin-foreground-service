@@ -61,7 +61,7 @@ public class ForegroundService extends Service {
         
         
         NotificationChannel channel;
-        NotificationCompat notification;
+        Notification notification;
         if (android.os.Build.VERSION.SDK_INT >= 26) {
             // Create notification channel
             channel = new NotificationChannel("foreground.service.channel", "Background Services", importance);
