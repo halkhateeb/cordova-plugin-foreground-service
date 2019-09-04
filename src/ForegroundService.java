@@ -8,7 +8,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.IBinder;
 import android.os.Bundle;
-import android.annotation.TargetApi;
+// import android.annotation.TargetApi;
 
 public class ForegroundService extends Service {
     @Override
@@ -25,7 +25,7 @@ public class ForegroundService extends Service {
         return START_STICKY;
     }
 
-    @TargetApi(26)
+//     @TargetApi(26)
     private void startPluginForegroundService(Bundle extras) {
         Context context = getApplicationContext();
 
