@@ -44,7 +44,7 @@ public class ForegroundService extends Service {
 
         final NotificationCompat.Builder builder = getNotificationBuilder(context,
              "com.example.your_app.notification.CHANNEL_ID_FOREGROUND", // Channel id
-        NotificationManagerCompat.IMPORTANCE_LOW); //Low importance prevent visual appearance for this notification channel on top
+        NotificationManagerCompat.IMPORTANCE_HIGH); //Low importance prevent visual appearance for this notification channel on top
         builder.setOngoing(true)
         .setSmallIcon(icon == 0 ? 17301514 : icon)
         .setContentTitle((CharSequence) extras.get("title"))
